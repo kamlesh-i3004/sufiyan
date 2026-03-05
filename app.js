@@ -546,7 +546,10 @@ async function handleLogin(e) {
         if (userNameEl) {
             userNameEl.textContent = AppState.currentUser.name;
         }
-        document.getElementById('header-user-name').textContent = AppState.currentUser.name;
+        const headerUserEl = document.getElementById('header-user-name');
+        if (headerUserEl) {
+            headerUserEl.textContent = AppState.currentUser.name;
+        }
         
         showToast('Welcome back!', 'success');
         showScreen('dashboard-screen');
@@ -990,9 +993,19 @@ function openShareModal() {
     const result = AppState.diagnosisResult;
     if (!result) return;
     
-    document.getElementById('share-card-image').src = document.getElementById('preview-image').src;
-    document.getElementById('share-card-disease').textContent = result.name;
-    document.getElementById('share-card-confidence').textContent = `${result.confidence}% confidence`;
+    const shareCardImage = document.getElementById('share-card-image');
+    const previewImage = document.getElementById('preview-image');
+    if (shareCardImage && previewImage) {
+        shareCardImage.src = previewImage.src;
+    }
+    const shareCardDisease = document.getElementById('share-card-disease');
+    if (shareCardDisease) {
+        shareCardDisease.textContent = result.name;
+    }
+    const shareCardConfidence = document.getElementById('share-card-confidence');
+    if (shareCardConfidence) {
+        shareCardConfidence.textContent = `${result.confidence}% confidence`;
+    }
     
     document.getElementById('share-modal').classList.remove('hidden');
 }

@@ -7,6 +7,17 @@
     <meta name="theme-color" content="#10b981">
     <title>GreenGuardian - Plant Disease Diagnosis</title>
     
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+    
+    <script>
+        // Suppress Tailwind CDN warnings
+        const originalWarn = console.warn;
+        console.warn = function(...args) {
+            if (args[0]?.includes('cdn.tailwindcss.com')) return;
+            return originalWarn.apply(console, args);
+        };
+    </script>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
