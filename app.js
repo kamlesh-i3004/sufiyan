@@ -482,6 +482,26 @@ function setAccentColor(color) {
 }
 
 // ==========================================
+// USER DISPLAY HELPER
+// ==========================================
+
+function updateUserDisplay() {
+    if (!AppState.currentUser) return;
+    
+    const avatarEl = document.getElementById('header-avatar');
+    const userNameEl = document.getElementById('header-user-name');
+    
+    if (avatarEl) {
+        avatarEl.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(AppState.currentUser.name)}`;
+        avatarEl.alt = AppState.currentUser.name;
+    }
+    
+    if (userNameEl) {
+        userNameEl.textContent = AppState.currentUser.name;
+    }
+}
+
+// ==========================================
 // MOCK API
 // ==========================================
 
@@ -537,19 +557,17 @@ async function handleLogin(e) {
     setButtonLoading(btn, document.getElementById('login-btn-text'), document.getElementById('login-btn-icon'), document.getElementById('login-spinner'), true);
     
     try {
-        await mockFetch('/api/auth/login', { email, password });
-        AppState.currentUser = { email, name: email.split('@')[0] };
-        AppState.userProfile.name = email.split('@')[0];
-        AppState.userProfile.email = email;
+        const response = await mockFetch('/api/auth/login', { email, password });
+        AppState.currentUser = { email: response.user.email, name: response.user.name };
+        AppState.userProfile.name = response.user.name;
+        AppState.userProfile.email = response.user.email;
         
         const userNameEl = document.getElementById('user-name');
         if (userNameEl) {
             userNameEl.textContent = AppState.currentUser.name;
         }
-        const headerUserEl = document.getElementById('header-user-name');
-        if (headerUserEl) {
-            headerUserEl.textContent = AppState.currentUser.name;
-        }
+        
+        updateUserDisplay();
         
         showToast('Welcome back!', 'success');
         showScreen('dashboard-screen');
@@ -595,8 +613,14 @@ async function handleSignup(e) {
     
     try {
         await mockFetch('/api/auth/signup', { name, email, password });
+        AppState.currentUser = { email, name };
+        AppState.userProfile.name = name;
+        AppState.userProfile.email = email;
+        
+        updateUserDisplay();
+        
         showToast('Account created successfully!', 'success');
-        showScreen('login-screen');
+        showScreen('dashboard-screen');
         document.getElementById('signup-form').reset();
     } catch (error) {
         showToast(error.message || 'Failed to create account', 'error');
